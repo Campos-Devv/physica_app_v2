@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "441474208790",
+    "firebase_url": "https://physica-app-c718b-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "physica-app-c718b",
+    "storage_bucket": "physica-app-c718b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:441474208790:android:9115a78e48f5f3280f1137",
+        "android_client_info": {
+          "package_name": "com.example.physica_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZCZ7gzSk5-fcqMvT0kaQZk27JVYKhWWc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
