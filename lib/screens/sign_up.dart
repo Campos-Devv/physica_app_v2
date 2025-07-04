@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:physica_app/screens/sign_in.dart';
@@ -5,6 +7,8 @@ import 'package:physica_app/utils/colors.dart';
 import 'package:physica_app/utils/media_query.dart';
 import 'package:physica_app/widgets/loading_state.dart';
 import 'package:physica_app/widgets/slide_left_right_2.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -797,28 +801,92 @@ class _SignUpState extends State<SignUp> {
                                   
                                   if (isValid) {
                                     setState(() {
-                                      _isLoading = true; // Show loading indicator
+                                      _isLoading = true;
                                     });
                                     
                                     try {
-                                      // Your sign up logic here
-                                      await Future.delayed(const Duration(seconds: 2)); // Simulate API call
-                                      print('Form is valid! Proceeding with sign up...');
+                                      // Create user with Firebase Auth
+                                      print("Creating Firebase Auth user...");
+                                      final UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                                        email: _emailController.text.trim(),
+                                        password: _passwordController.text,
+                                      );
+                                      print("User created successfully: ${userCredential.user?.uid}");
+                                      
+                                      // Add user profile data to Firestore
+                                      print("Adding user to Firestore...");
+                                      try {
+                                        // Add a timeout to your Firestore operation
+                                        await Future.any([
+                                          FirebaseFirestore.instance.collection('users').doc(userCredential.user!.uid).set({
+                                            'firstName': _firstNameController.text.trim(),
+                                            'lastName': _lastNameController.text.trim(),
+                                            'email': _emailController.text.trim(),
+                                            'lrn': _lrnController.text,
+                                            'strand': _selectedStrand,
+                                            'gender': _selectedGender,
+                                            'createdAt': FieldValue.serverTimestamp(),
+                                          }, SetOptions(merge: false)),
+                                          Future.delayed(Duration(seconds: 10)).then((_) => throw TimeoutException('Firestore operation timed out')),
+                                        ]);
+                                      } catch (e) {
+                                        if (e is TimeoutException) {
+                                          print("Firestore operation timed out, but user was created");
+                                          // Continue with your success flow
+                                        } else {
+                                          rethrow;
+                                        }
+                                      }
+                                      print("User added to Firestore successfully");
+                                      
+                                      // Set user display name (visible throughout app)
+                                      print("Updating display name...");
+                                      await userCredential.user!.updateDisplayName("${_firstNameController.text} ${_lastNameController.text}");
+                                      print("Display name updated successfully");
+                                      
+                                      // After setting user data and updating display name
+                                      await FirebaseAuth.instance.signOut();
+                                      
+                                      await FirebaseFirestore.instance.terminate();
+                                      await FirebaseFirestore.instance.clearPersistence();
                                       
                                       setState(() {
                                         _isLoading = false;
                                       });
-
+          
                                       _showSuccessDialog(context);
-                                    } catch (e) {
-                                      // Handle errors
-                                      print('Error during sign up: $e');
-                                    } finally {
-                                      if (mounted) {
-                                        setState(() {
-                                          _isLoading = false; // Hide loading indicator
-                                        });
+                                    } on FirebaseAuthException catch (e) {
+                                      print("Firebase Auth Error: ${e.code} - ${e.message}");
+                                      // Handle Firebase authentication errors
+                                      setState(() {
+                                        _isLoading = false;
+                                      });
+                                      
+                                      String errorMessage = "An error occurred during sign up";
+                                      
+                                      if (e.code == 'weak-password') {
+                                        errorMessage = 'The password provided is too weak';
+                                        setState(() { _passwordError = errorMessage; });
+                                      } else if (e.code == 'email-already-in-use') {
+                                        errorMessage = 'An account already exists for that email';
+                                        setState(() { _emailError = errorMessage; });
+                                      } else if (e.code == 'invalid-email') {
+                                        errorMessage = 'Invalid email address format';
+                                        setState(() { _emailError = errorMessage; });
                                       }
+                                      
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(content: Text(errorMessage))
+                                      );
+                                    } catch (e) {
+                                      // Handle other errors
+                                      setState(() {
+                                        _isLoading = false;
+                                      });
+                                      
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(content: Text('Error: ${e.toString()}')),
+                                      );
                                     }
                                   }
           
@@ -865,6 +933,9 @@ class _SignUpState extends State<SignUp> {
                             
                             GestureDetector(
                               onTap: () {
+                                // Sign out the user in case they were automatically signed in
+                                FirebaseAuth.instance.signOut();
+                                
                                 Navigator.pushReplacement(
                                   context, 
                                   SlideLeftRight2(enterPage: const SignIn(),

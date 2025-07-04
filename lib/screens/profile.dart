@@ -4,6 +4,8 @@ import 'package:physica_app/utils/colors.dart';
 import 'package:physica_app/utils/media_query.dart';
 import 'package:physica_app/widgets/loading_state.dart';
 import 'package:physica_app/widgets/slide_righ_left_2.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -16,6 +18,49 @@ class _ProfileScreenState extends State<ProfileScreen> {
   // Current user name state
   String firstName = "John";
   String lastName = "Doe";
+
+  @override
+  void initState() {
+    super.initState();
+    getCurrentUser();
+  }
+
+  void getCurrentUser() {
+    User? user = FirebaseAuth.instance.currentUser;
+    
+    if (user != null) {
+      // User is signed in
+      String uid = user.uid;
+      String? email = user.email;
+      String? displayName = user.displayName;
+      String? photoURL = user.photoURL;
+      
+      print('User ID: $uid');
+      print('Email: $email');
+      print('Display Name: $displayName');
+      
+      // You can also access additional user information from Firestore
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(uid)
+          .get()
+          .then((doc) {
+        if (doc.exists) {
+          Map<String, dynamic> userData = doc.data()!;
+          setState(() {
+            firstName = userData['firstName'] ?? '';
+            lastName = userData['lastName'] ?? '';
+          });
+          print('First Name: ${userData['firstName']}');
+          print('Last Name: ${userData['lastName']}');
+          // Access other fields as needed
+        }
+      });
+    } else {
+      // No user is signed in
+      print('No user is currently logged in');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -1126,5 +1171,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
         );
       },
     );
+  }
+
+  // Add this function to your profile screen or wherever you want to add logout functionality
+  Future<void> signOut() async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      
+      // Navigate back to sign in screen after successful logout
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => SignIn()),
+      );
+    } catch (e) {
+      print('Error signing out: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error signing out. Please try again.')),
+      );
+    }
   }
 }

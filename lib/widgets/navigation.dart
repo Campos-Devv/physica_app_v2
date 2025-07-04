@@ -20,7 +20,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
   Widget build(BuildContext context) {
     final bottomPadding = MediaQuery.of(context).padding.bottom;
     return Container(
-      height: 54 + bottomPadding,
+      height: 64 + bottomPadding,
       padding: EdgeInsets.only(
         bottom: bottomPadding
       ),
@@ -80,7 +80,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                 errorBuilder: (context, error, stackTrace) {
                   return Icon(
                     _fallbackIcon(label),
-                    size: 20,
+                    size: 28,
                     color: isSelected ? context.whiteColor : context.whiteColor,
                   );
                 },
@@ -95,7 +95,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                       style: TextStyle(
                         color: context.whiteColor,
                         fontWeight: FontWeight.w600,
-                        fontSize: 12,
+                        fontSize: 16,
                       ),
                     )
                   ],

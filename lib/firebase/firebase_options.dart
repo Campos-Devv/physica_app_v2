@@ -15,10 +15,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can create these using the FlutterFire CLI.',
-      );
+      return web; // Return empty web config instead of throwing error
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -57,5 +54,14 @@ class DefaultFirebaseOptions {
     messagingSenderId: '441474208790',
     projectId: 'physica-app-c718b',
     storageBucket: 'physica-app-c718b.firebasestorage.app',
+  );
+
+  // Add an empty web configuration
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyAZCZ7gzSk5-fcqMvT0kaQZk27JVYKhWWc',
+    appId: '1:441474208790:web:9115a78e48f5f3280f1137', // Note: this is a placeholder
+    messagingSenderId: '441474208790',
+    projectId: 'physica-app-c718b',
+    storageBucket: 'physica-app-c718b.appspot.com',
   );
 }

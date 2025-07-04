@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:physica_app/screens/home_screen.dart';
 import 'dart:async';
 import 'package:physica_app/screens/sign_in.dart';
 import 'package:physica_app/utils/colors.dart';
 import 'package:physica_app/utils/media_query.dart';
 import 'package:physica_app/widgets/loading_state.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -24,6 +26,19 @@ class _SplashScreenState extends State<SplashScreen> {
         MaterialPageRoute(builder: (context) => SignIn()),
       ),
     );
+  }
+
+  void checkAuthState() {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => HomeScreen(
+          currentIndex: 0, // Replace with your home screen index
+          onTap: (index) {}
+        )), // Replace with your home screen
+      );
+    }
   }
 
   @override
