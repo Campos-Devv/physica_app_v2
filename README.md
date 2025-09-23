@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # physica_app
 
 A new Flutter project.
@@ -14,3 +15,6 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+=======
+# physica_app_v2
+>>>>>>> e05bb7db94d70faf400e21f1623eddd2eecdfb0b

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:physica_app/screens/home_screen.dart';
+import 'package:physica_app/screens/navigations/home_screen.dart';
 import 'package:physica_app/utils/colors.dart';
 import 'package:physica_app/utils/media_query.dart';
 import 'package:physica_app/widgets/slide_left_right_2.dart';

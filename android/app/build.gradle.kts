@@ -8,7 +8,7 @@ plugins {
 android {
     namespace = "com.example.physica_app"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    ndkVersion = "27.0.12077973" // Updated to match Firebase plugins requirement
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -43,4 +43,5 @@ flutter {
     source = "../.."
 }
 
-apply plugin: 'com.google.gms.google-services'
+// Apply the Google services plugin using Kotlin DSL syntax
+apply(plugin = "com.google.gms.google-services")

@@ -21,7 +21,13 @@ tasks.register<Delete>("clean") {
 }
 
 buildscript {
+  repositories {
+    google()
+    mavenCentral()
+  }
   dependencies {
-    classpath("com.google.gms:google-services:4.3.15");  // Correct Kotlin syntax with parentheses
+    classpath("com.google.gms:google-services:4.3.15")  // Correct Kotlin syntax with parentheses
   }
 }
+
+apply(plugin = "com.google.gms.google-services")
