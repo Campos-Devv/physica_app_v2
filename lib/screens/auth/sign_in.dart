@@ -278,9 +278,9 @@ class _SignInState extends State<SignIn> {
       fillColor: context.whiteColor,
       hintText: hintText,
       hintStyle: TextStyle(
-        color: context.skyBlue.withAlpha(128),
+        color: context.blackColor.withAlpha(90),
         fontSize: context.fontSize(10, xs: 8, sm: 9, md: 10, lg: 13, xl: 15, xxl: 17),
-        fontWeight: FontWeight.w400,
+        fontWeight: FontWeight.w500,
       ),
       errorText: errorText,
       errorStyle: TextStyle(
@@ -453,7 +453,7 @@ class _SignInState extends State<SignIn> {
           keyboardType: TextInputType.emailAddress,
           onChanged: _validateEmail,
           decoration: getInputDecoration(
-            hintText: 'Enter your email',
+            hintText: 'example@gmail.com',
             errorText: _emailError,
           ),
         ),
@@ -480,7 +480,7 @@ class _SignInState extends State<SignIn> {
           onChanged: _validatePassword,
           textAlignVertical: TextAlignVertical.center,
           decoration: getInputDecoration(
-            hintText: 'Enter your password',
+            hintText: '**********',
             errorText: _passwordError,
             suffixIcon: Padding(
               padding: EdgeInsets.only(right: context.space(14, xs: 16, sm: 16, md: 18, lg: 20)),
@@ -607,7 +607,7 @@ class _SignInState extends State<SignIn> {
   Widget _buildGuestButton() {
     return Center(
       child: SizedBox(
-        width: context.buttonWidth(80, xs: 80, sm: 100, md: 120, lg: 120, xl: 150, xxl: 180),
+        width: context.buttonWidth(80, xs: 80, sm: 100, md: 120, lg: 140, xl: 150, xxl: 180),
         height: context.buttonHeight(40, xs: 32, sm: 36, md: 40, lg: 44, xl: 48, xxl: 52),
         child: ElevatedButton(
           onPressed: () {

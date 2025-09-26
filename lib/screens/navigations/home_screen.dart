@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:physica_app/games/alter_games/game_webview.dart';
 import 'package:physica_app/screens/navigations/ar_samples.dart';
 import 'package:physica_app/screens/lessons.dart'; // Add this import
 import 'package:physica_app/screens/navigations/profile.dart';
@@ -489,13 +490,16 @@ class _HomeContentState extends State<HomeContent> {
               // Desktop/Tablet: 4 games in one row
               Row(
                 children: [
-                  Expanded(child: _buildGameContainer(context, 'Game 1')),
+                  Expanded(child: _buildGameContainer(context, gameName: 'Solar', route: LocalHtmlGame(
+                    game: HtmlGame.solarSystem,
+                    showAppBar: true,
+                  ))),
                   SizedBox(width: context.space(12, lg: 16)),
-                  Expanded(child: _buildGameContainer(context, 'Game 2')),
+                  Expanded(child: _buildGameContainer(context, gameName: 'Game 2')),
                   SizedBox(width: context.space(12, lg: 16)),
-                  Expanded(child: _buildGameContainer(context, 'Game 3')),
+                  Expanded(child: _buildGameContainer(context, gameName: 'Game 3')),
                   SizedBox(width: context.space(12, lg: 16)),
-                  Expanded(child: _buildGameContainer(context, 'Game 4')),
+                  Expanded(child: _buildGameContainer(context, gameName: 'Game 4')),
                 ],
               )
             else
@@ -505,18 +509,21 @@ class _HomeContentState extends State<HomeContent> {
                   // First row of game containers
                   Row(
                     children: [
-                      Expanded(child: _buildGameContainer(context, 'Game 1')),
+                      Expanded(child: _buildGameContainer(context, gameName: 'Solar', route: LocalHtmlGame(
+                        game: HtmlGame.solarSystem,
+                        showAppBar: true,
+                      ))),
                       SizedBox(width: context.space(12, xs: 8, sm: 10, md: 12)),
-                      Expanded(child: _buildGameContainer(context, 'Game 2')),
+                      Expanded(child: _buildGameContainer(context, gameName: 'Game 2')),
                     ],
                   ),
                   SizedBox(height: context.space(12, xs: 8, sm: 10, md: 12)),
                   // Second row of game containers
                   Row(
                     children: [
-                      Expanded(child: _buildGameContainer(context, 'Game 3')),
+                      Expanded(child: _buildGameContainer(context, gameName: 'Game 3')),
                       SizedBox(width: context.space(12, xs: 8, sm: 10, md: 12)),
-                      Expanded(child: _buildGameContainer(context, 'Game 4')),
+                      Expanded(child: _buildGameContainer(context, gameName: 'Game 4')),
                     ],
                   ),
                 ],
@@ -530,50 +537,68 @@ class _HomeContentState extends State<HomeContent> {
     );
   }
 
-  // Enhanced game container builder
-  Widget _buildGameContainer(BuildContext context, String gameName) {
-    return Container(
-      height: context.breakpoint(
-        xs: context.heightPercent(11),
-        sm: context.heightPercent(10),
-        md: context.heightPercent(9),
-        lg: context.heightPercent(12),
-        xl: context.heightPercent(10),
-        fallback: context.heightPercent(11),
-      ),
-      decoration: BoxDecoration(
-        color: context.skyBlue,
-        borderRadius: BorderRadius.circular(
-          context.radius(8, xs: 8, sm: 10, md: 12, lg: 14),
+  // Enhanced game container builder with customization and navigation
+  Widget _buildGameContainer(
+    BuildContext context, {
+    required String gameName,
+    String? iconPath,
+    Color? containerColor,
+    Color? textColor,
+    Color? iconColor,
+    Widget? route,
+    VoidCallback? onTap,
+    double? customHeight,
+  }) {
+    return GestureDetector(
+      onTap: onTap ?? (route != null 
+        ? () => Navigator.push(
+            context,
+            SlideRightLeftRoute(page: route),
+          )
+        : null),
+      child: Container(
+        height: customHeight ?? context.breakpoint(
+          xs: context.heightPercent(11),
+          sm: context.heightPercent(10),
+          md: context.heightPercent(9),
+          lg: context.heightPercent(12),
+          xl: context.heightPercent(10),
+          fallback: context.heightPercent(11),
         ),
-        boxShadow: [
-          BoxShadow(
-            color: context.blackColor.withAlpha(60),
-            spreadRadius: context.responsiveCombined(1, xs: 0.5, lg: 1.5),
-            blurRadius: context.responsiveCombined(5, xs: 3, lg: 8),
-            offset: Offset(0, context.responsiveCombined(3, xs: 2, lg: 4)),
+        decoration: BoxDecoration(
+          color: containerColor ?? context.skyBlue,
+          borderRadius: BorderRadius.circular(
+            context.radius(8, xs: 8, sm: 10, md: 12, lg: 14),
           ),
-        ],
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Image.asset(
-            'assets/icons/gamepad_icon.png',
-            width: context.iconSize(32, xs: 24, sm: 28, md: 32, lg: 40, xl: 48),
-            height: context.iconSize(32, xs: 24, sm: 28, md: 32, lg: 40, xl: 48),
-            color: context.whiteColor,
-          ),
-          SizedBox(height: context.space(6, xs: 4, sm: 5, md: 6, lg: 8)),
-          Text(
-            gameName,
-            style: TextStyle(
-              fontSize: context.fontSize(14, xs: 8, sm: 10, md: 12, lg: 14, xl: 16),
-              color: context.whiteColor,
-              fontWeight: FontWeight.w500,
+          boxShadow: [
+            BoxShadow(
+              color: context.blackColor.withAlpha(60),
+              spreadRadius: context.responsiveCombined(1, xs: 0.5, lg: 1.5),
+              blurRadius: context.responsiveCombined(5, xs: 3, lg: 8),
+              offset: Offset(0, context.responsiveCombined(3, xs: 2, lg: 4)),
             ),
-          ),
-        ],
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              iconPath ?? 'assets/icons/gamepad_icon.png',
+              width: context.iconSize(32, xs: 24, sm: 28, md: 32, lg: 40, xl: 48),
+              height: context.iconSize(32, xs: 24, sm: 28, md: 32, lg: 40, xl: 48),
+              color: iconColor ?? context.whiteColor,
+            ),
+            SizedBox(height: context.space(6, xs: 4, sm: 5, md: 6, lg: 8)),
+            Text(
+              gameName,
+              style: TextStyle(
+                fontSize: context.fontSize(14, xs: 8, sm: 10, md: 12, lg: 14, xl: 16),
+                color: textColor ?? context.whiteColor,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
