@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:physica_app/utils/colors.dart';
+import 'package:physica_app/utils/media_query.dart';
 
 class BottomNavBar extends StatefulWidget {
   final int currentIndex;
@@ -18,20 +19,27 @@ class BottomNavBar extends StatefulWidget {
 class _BottomNavBarState extends State<BottomNavBar> {
   @override
   Widget build(BuildContext context) {
-    final bottomPadding = MediaQuery.of(context).padding.bottom;
     return Container(
-      height: 64 + bottomPadding,
+      height: context.buttonHeight(
+        48,
+        xs: 48,
+        sm: 50,
+        md: 52,
+        lg: 54,
+        xl: 56,
+        xxl: 58,
+      ) + context.bottomPadding,
       padding: EdgeInsets.only(
-        bottom: bottomPadding
+        bottom: context.bottomPadding
       ),
       decoration: BoxDecoration(
         color: context.skyBlue,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.15),
-            blurRadius: 12,
+            blurRadius: context.space(12),
             spreadRadius: 0,
-            offset: const Offset(0, -2),
+            offset: Offset(0, context.space(-2)),
           )
         ]
       ),
@@ -57,30 +65,30 @@ class _BottomNavBarState extends State<BottomNavBar> {
         onTap: () {
           widget.onTap(index);
         },
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(context.radius(16)),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 250),
           curve: Curves.easeInOut,
           padding: EdgeInsets.symmetric(
-            horizontal: isSelected ? 12 :10,
-            vertical: 6,
+            horizontal: context.space(isSelected ? 12 : 10),
+            vertical: context.space(6),
           ),
           decoration: BoxDecoration(
             color: Colors.transparent,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(context.radius(16)),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               Image.asset(
                 iconPath,
-                width: 24,
-                height: 24,
+                width: context.iconSize(24, xs: 16, sm: 18, md: 20, lg: 22, xl: 24, xxl: 26),
+                height: context.iconSize(24, xs: 16, sm: 18, md: 20, lg: 22, xl: 24, xxl: 26),
                 color: isSelected ? context.whiteColor : context.whiteColor,
                 errorBuilder: (context, error, stackTrace) {
                   return Icon(
                     _fallbackIcon(label),
-                    size: 28,
+                    size: context.iconSize(28, xs: 24, sm: 18, lg: 30, xl: 32),
                     color: isSelected ? context.whiteColor : context.whiteColor,
                   );
                 },
@@ -89,13 +97,13 @@ class _BottomNavBarState extends State<BottomNavBar> {
                 firstChild: const SizedBox(width: 0,),
                 secondChild: Row(
                   children: [
-                    const SizedBox(width: 6,),
+                    SizedBox(width: context.space(6, xs: 6, sm: 7, md: 8, lg: 9, xl: 10, xxl: 11)),
                     Text(
                       label,
                       style: TextStyle(
                         color: context.whiteColor,
                         fontWeight: FontWeight.w600,
-                        fontSize: 16,
+                        fontSize: context.fontSize(16, xs: 10, sm: 12, md: 14, lg: 16, xl: 18, xxl: 20),
                       ),
                     )
                   ],

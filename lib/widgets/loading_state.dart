@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:physica_app/utils/media_query.dart';
 
 class BouncingDotsLoading extends StatefulWidget {
   final Color? backgroundColor;
@@ -59,7 +60,7 @@ class _BouncingDotsLoadingState extends State<BouncingDotsLoading> with SingleTi
           mainAxisSize: MainAxisSize.min,
           children: [
             SizedBox(
-              height: widget.size * 0.6,
+              height: widget.size * 0.3,
               child: Center(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -83,7 +84,7 @@ class _BouncingDotsLoadingState extends State<BouncingDotsLoading> with SingleTi
                 widget.message!,
                 style: TextStyle(
                   color: color,
-                  fontSize: 16.0,
+                  fontSize: context.fontSize(16, xs: 12, sm: 14, md: 16, lg: 18, xl: 20),
                   fontWeight: FontWeight.w500,
                 ),
                 textAlign: TextAlign.center,
@@ -107,7 +108,16 @@ class _BouncingDotsLoadingState extends State<BouncingDotsLoading> with SingleTi
           final phaseOffset = index * 0.33;
           final t = ((_controller.value + phaseOffset) % 1.0);
           
-          final bounce = math.sin(t * 2 * math.pi) * (widget.size * 0.12);
+          // Adaptive bounce height based on screen size
+          final bounceHeight = context.responsiveCombined(
+            widget.size * 0.12, 
+            xs: widget.size * 0.02, 
+            sm: widget.size * 0.03, 
+            md: widget.size * 0.04, 
+            lg: widget.size * 0.05, 
+            xl: widget.size * 0.06
+          );
+          final bounce = math.sin(t * 2 * math.pi) * bounceHeight;
 
           final scale = 1.0 - (math.cos(t * 2 * math.pi) * 0.005);
 
